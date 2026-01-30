@@ -1,6 +1,6 @@
 # 🔒 Priva PDF
 
-A local-first PDF tool for merging and compressing documents. Built for privacy—your sensitive files never leave your machine.
+I built this tool for personal use because I refuse to upload my passport or bank statements to random websites just to merge or shrink a file. Most "free" online PDF tools are a privacy nightmare; priva_pdf is a simple, local-first alternative that ensures your sensitive data never leaves your machine.
 
 No cloud uploads. No tracking. No bloat.
 
