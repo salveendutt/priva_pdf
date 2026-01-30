@@ -2,9 +2,10 @@
 __pycache__/
 *.py[codz]
 *$py.class
-
+data/
 # C extensions
 *.so
+.DS_Store
 
 # Distribution / packaging
 .Python
