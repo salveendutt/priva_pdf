@@ -10,19 +10,231 @@ st.set_page_config(
     page_title="Priva PDF",
     page_icon="📄",
     layout="centered",
+    initial_sidebar_state="collapsed",
 )
 
-st.title("📄 Priva PDF")
-st.markdown("*Private, local PDF tools - your files never leave your machine*")
+# Custom CSS for a more polished look
+st.markdown("""
+<style>
+    /* Import font - using a more retro-friendly font */
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+    
+    /* Global styles */
+    .stApp {
+        font-family: 'Space Grotesk', sans-serif;
+    }
+    
+    /* Header styling */
+    .main-header {
+        text-align: center;
+        padding: 2rem 0 1rem 0;
+    }
+    
+    .main-header .logo-icon {
+        font-size: 3.5rem;
+        filter: grayscale(100%) brightness(2);
+        opacity: 0.9;
+    }
+    
+    .main-header h1 {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.02em;
+    }
+    
+    .main-header p {
+        color: #a8a29e;
+        font-size: 1.1rem;
+        letter-spacing: 0.02em;
+    }
+    
+    /* Tab styling */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 4px;
+        background-color: rgba(245, 158, 11, 0.08);
+        padding: 0.5rem;
+        border-radius: 12px;
+        border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+    
+    .stTabs [data-baseweb="tab"] {
+        border-radius: 8px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.7);
+        background-color: transparent;
+    }
+    
+    .stTabs [data-baseweb="tab"]:hover {
+        color: rgba(255, 255, 255, 0.9);
+        background-color: rgba(245, 158, 11, 0.1);
+    }
+    
+    .stTabs [aria-selected="true"] {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+        color: #1c1917 !important;
+        font-weight: 600 !important;
+    }
+    
+    .stTabs [data-baseweb="tab-highlight"] {
+        display: none;
+    }
+    
+    .stTabs [data-baseweb="tab-border"] {
+        display: none;
+    }
+    
+    /* File uploader styling */
+    .stFileUploader > div > div {
+        border: 2px dashed rgba(245, 158, 11, 0.3);
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+    
+    .stFileUploader > div > div:hover {
+        border-color: #f59e0b;
+        background-color: rgba(245, 158, 11, 0.05);
+    }
+    
+    /* Button styling */
+    .stButton > button {
+        border-radius: 8px;
+        padding: 0.75rem 2rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+    }
+    
+    .stButton > button[kind="primary"] {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: #1c1917;
+        box-shadow: 0 4px 14px 0 rgba(245, 158, 11, 0.35);
+    }
+    
+    .stButton > button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(245, 158, 11, 0.45);
+    }
+    
+    /* Download button */
+    .stDownloadButton > button {
+        background: linear-gradient(135deg, #78716c 0%, #57534e 100%);
+        border-radius: 8px;
+        border: none;
+        font-weight: 600;
+        box-shadow: 0 4px 14px 0 rgba(120, 113, 108, 0.35);
+    }
+    
+    .stDownloadButton > button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(120, 113, 108, 0.45);
+    }
+    
+    /* Metric cards */
+    [data-testid="stMetric"] {
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.08) 100%);
+        border-radius: 12px;
+        padding: 1rem;
+        border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+    
+    [data-testid="stMetric"] label {
+        color: #a8a29e;
+        font-weight: 500;
+    }
+    
+    [data-testid="stMetric"] [data-testid="stMetricValue"] {
+        color: #fafaf9;
+        font-weight: 700;
+    }
+    
+    /* Info/Success/Error boxes */
+    .stAlert {
+        border-radius: 12px;
+        border: none;
+    }
+    
+    /* Text input styling */
+    .stTextInput > div > div > input {
+        border-radius: 8px;
+        border: 2px solid rgba(245, 158, 11, 0.2);
+        padding: 0.75rem;
+    }
+    
+    .stTextInput > div > div > input:focus {
+        border-color: #f59e0b;
+        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
+    }
+    
+    /* Select box styling */
+    .stSelectbox > div > div {
+        border-radius: 8px;
+    }
+    
+    /* Footer */
+    .footer {
+        text-align: center;
+        padding: 2rem 0;
+        color: #78716c;
+        font-size: 0.875rem;
+    }
+    
+    .footer .privacy-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(217, 119, 6, 0.1) 100%);
+        color: #f59e0b;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 500;
+        border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    
+    /* File list styling */
+    .file-list {
+        background: rgba(245, 158, 11, 0.05);
+        border-radius: 8px;
+        padding: 1rem;
+        margin: 1rem 0;
+    }
+    
+    /* Hide Streamlit branding */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    
+    /* Divider */
+    hr {
+        border: none;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.3), transparent);
+        margin: 2rem 0;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# Header
+st.markdown("""
+<div class="main-header">
+    <div class="logo-icon">▢</div>
+    <h1>Priva PDF</h1>
+    <p>Private, local PDF tools — your files never leave your machine</p>
+</div>
+""", unsafe_allow_html=True)
 
 # Initialize the PDF tool
 pdf_tool = PdfTool()
 
 # Create tabs for different functionalities
 tab_merge, tab_compress, tab_merge_compress = st.tabs([
-    "🔗 Merge PDFs", 
-    "🗜️ Compress PDF", 
-    "🔗🗜️ Merge & Compress"
+    "Merge PDFs", 
+    "Compress PDF", 
+    "Merge & Compress"
 ])
 
 # Helper function for compression level selection
@@ -59,11 +271,11 @@ def get_file_size_mb(file_path: Path) -> float:
 
 # ===== MERGE TAB =====
 with tab_merge:
-    st.header("Merge Multiple PDFs")
-    st.markdown("Combine multiple PDF files into a single document.")
+    st.markdown("### Merge Multiple PDFs")
+    st.markdown("<p style='color: #a8a29e; margin-bottom: 1.5rem;'>Combine multiple PDF files into a single document.</p>", unsafe_allow_html=True)
     
     uploaded_files = st.file_uploader(
-        "Upload PDF files to merge",
+        "Drop PDF files here or click to browse",
         type=["pdf"],
         accept_multiple_files=True,
         key="merge_upload",
@@ -71,9 +283,11 @@ with tab_merge:
     )
     
     if uploaded_files:
-        st.markdown(f"**{len(uploaded_files)} file(s) selected:**")
+        st.markdown(f"""<div style='background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(217, 119, 6, 0.1) 100%); 
+            border-radius: 12px; padding: 1rem; margin: 1rem 0; border-left: 4px solid #f59e0b;'>
+            <strong>{len(uploaded_files)} file(s) ready to merge</strong></div>""", unsafe_allow_html=True)
         for i, f in enumerate(uploaded_files, 1):
-            st.text(f"{i}. {f.name} ({f.size / 1024:.1f} KB)")
+            st.markdown(f"<span style='color: #d6d3d1;'>{i}. **{f.name}** <span style='color: #78716c;'>({f.size / 1024:.1f} KB)</span></span>", unsafe_allow_html=True)
         
         output_name = st.text_input(
             "Output filename",
@@ -84,7 +298,7 @@ with tab_merge:
         if not output_name.endswith(".pdf"):
             output_name += ".pdf"
         
-        if st.button("🔗 Merge PDFs", type="primary", key="merge_btn"):
+        if st.button("Merge PDFs", type="primary", key="merge_btn"):
             if len(uploaded_files) < 2:
                 st.error("Please upload at least 2 PDF files to merge.")
             else:
@@ -107,9 +321,9 @@ with tab_merge:
                             # Read result for download
                             result_bytes = result_path.read_bytes()
                             
-                            st.success(f"✅ Successfully merged {len(uploaded_files)} PDFs!")
+                            st.success(f"Successfully merged {len(uploaded_files)} PDFs!")
                             st.download_button(
-                                label="⬇️ Download Merged PDF",
+                                label="Download Merged PDF",
                                 data=result_bytes,
                                 file_name=output_name,
                                 mime="application/pdf",
@@ -120,18 +334,20 @@ with tab_merge:
 
 # ===== COMPRESS TAB =====
 with tab_compress:
-    st.header("Compress a PDF")
-    st.markdown("Reduce PDF file size by compressing embedded images.")
+    st.markdown("### Compress a PDF")
+    st.markdown("<p style='color: #a8a29e; margin-bottom: 1.5rem;'>Reduce PDF file size by compressing embedded images.</p>", unsafe_allow_html=True)
     
     uploaded_file = st.file_uploader(
-        "Upload a PDF file to compress",
+        "Drop a PDF file here or click to browse",
         type=["pdf"],
         key="compress_upload",
     )
     
     if uploaded_file:
         original_size_kb = uploaded_file.size / 1024
-        st.info(f"📁 **{uploaded_file.name}** - Original size: {original_size_kb:.1f} KB")
+        st.markdown(f"""<div style='background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(217, 119, 6, 0.1) 100%); 
+            border-radius: 12px; padding: 1rem; margin: 1rem 0; border-left: 4px solid #d97706;'>
+            <strong>{uploaded_file.name}</strong> — Original size: <strong>{original_size_kb:.1f} KB</strong></div>""", unsafe_allow_html=True)
         
         compression_level = compression_level_selector("compress_level")
         
@@ -144,7 +360,7 @@ with tab_compress:
         if not output_name.endswith(".pdf"):
             output_name += ".pdf"
         
-        if st.button("🗜️ Compress PDF", type="primary", key="compress_btn"):
+        if st.button("Compress PDF", type="primary", key="compress_btn"):
             with st.spinner("Compressing PDF..."):
                 try:
                     with tempfile.TemporaryDirectory() as tmp_dir:
@@ -167,7 +383,7 @@ with tab_compress:
                         new_size_kb = len(result_bytes) / 1024
                         reduction = ((original_size_kb - new_size_kb) / original_size_kb) * 100
                         
-                        st.success(f"✅ Compression complete!")
+                        st.success(f"Compression complete!")
                         
                         col1, col2, col3 = st.columns(3)
                         col1.metric("Original Size", f"{original_size_kb:.1f} KB")
@@ -175,7 +391,7 @@ with tab_compress:
                         col3.metric("Reduction", f"{reduction:.1f}%")
                         
                         st.download_button(
-                            label="⬇️ Download Compressed PDF",
+                            label="Download Compressed PDF",
                             data=result_bytes,
                             file_name=output_name,
                             mime="application/pdf",
@@ -186,11 +402,11 @@ with tab_compress:
 
 # ===== MERGE & COMPRESS TAB =====
 with tab_merge_compress:
-    st.header("Merge & Compress PDFs")
-    st.markdown("Combine multiple PDFs into one and compress the result.")
+    st.markdown("### Merge & Compress PDFs")
+    st.markdown("<p style='color: #a8a29e; margin-bottom: 1.5rem;'>Combine multiple PDFs into one and compress the result.</p>", unsafe_allow_html=True)
     
     uploaded_files_mc = st.file_uploader(
-        "Upload PDF files to merge and compress",
+        "Drop PDF files here or click to browse",
         type=["pdf"],
         accept_multiple_files=True,
         key="merge_compress_upload",
@@ -198,13 +414,16 @@ with tab_merge_compress:
     )
     
     if uploaded_files_mc:
-        st.markdown(f"**{len(uploaded_files_mc)} file(s) selected:**")
+        st.markdown(f"""<div style='background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(180, 83, 9, 0.1) 100%); 
+            border-radius: 12px; padding: 1rem; margin: 1rem 0; border-left: 4px solid #b45309;'>
+            <strong>{len(uploaded_files_mc)} file(s) ready</strong></div>""", unsafe_allow_html=True)
         total_size = 0
         for i, f in enumerate(uploaded_files_mc, 1):
-            st.text(f"{i}. {f.name} ({f.size / 1024:.1f} KB)")
+            st.markdown(f"<span style='color: #d6d3d1;'>{i}. **{f.name}** <span style='color: #78716c;'>({f.size / 1024:.1f} KB)</span></span>", unsafe_allow_html=True)
             total_size += f.size
         
-        st.info(f"📊 Total input size: {total_size / 1024:.1f} KB")
+        st.markdown(f"""<div style='background: rgba(245, 158, 11, 0.08); border-radius: 8px; padding: 0.75rem; margin-top: 0.5rem; text-align: center; border: 1px solid rgba(245, 158, 11, 0.2);'>
+            Total input size: <strong>{total_size / 1024:.1f} KB</strong></div>""", unsafe_allow_html=True)
         
         compression_level_mc = compression_level_selector("merge_compress_level")
         
@@ -217,7 +436,7 @@ with tab_merge_compress:
         if not output_name_mc.endswith(".pdf"):
             output_name_mc += ".pdf"
         
-        if st.button("🔗🗜️ Merge & Compress", type="primary", key="merge_compress_btn"):
+        if st.button("Merge & Compress", type="primary", key="merge_compress_btn"):
             if len(uploaded_files_mc) < 2:
                 st.error("Please upload at least 2 PDF files to merge.")
             else:
@@ -253,7 +472,7 @@ with tab_merge_compress:
                             total_size_kb = total_size / 1024
                             reduction = ((total_size_kb - new_size_kb) / total_size_kb) * 100
                             
-                            st.success(f"✅ Successfully merged and compressed {len(uploaded_files_mc)} PDFs!")
+                            st.success(f"Successfully merged and compressed {len(uploaded_files_mc)} PDFs!")
                             
                             col1, col2, col3 = st.columns(3)
                             col1.metric("Original Total", f"{total_size_kb:.1f} KB")
@@ -261,7 +480,7 @@ with tab_merge_compress:
                             col3.metric("Reduction", f"{reduction:.1f}%")
                             
                             st.download_button(
-                                label="⬇️ Download Merged & Compressed PDF",
+                                label="Download Result",
                                 data=result_bytes,
                                 file_name=output_name_mc,
                                 mime="application/pdf",
@@ -271,11 +490,14 @@ with tab_merge_compress:
 
 
 # Footer
-st.divider()
+st.markdown("<br>", unsafe_allow_html=True)
 st.markdown(
     """
-    <div style='text-align: center; color: gray;'>
-        <small>🔒 All processing happens locally on your machine. Your files are never uploaded to any server.</small>
+    <div class="footer">
+        <div class="privacy-badge">
+            100% Private — All processing happens locally
+        </div>
+        <p style="margin-top: 1rem; font-size: 0.8rem;">Your files never leave your machine</p>
     </div>
     """,
     unsafe_allow_html=True
