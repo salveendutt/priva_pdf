@@ -278,9 +278,45 @@ with tab_merge:
     if uploaded_files:
         st.markdown(f"""<div style='background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(217, 119, 6, 0.1) 100%); 
             border-radius: 12px; padding: 1rem; margin: 1rem 0; border-left: 4px solid #f59e0b;'>
-            <strong>{len(uploaded_files)} file(s) ready to merge</strong></div>""", unsafe_allow_html=True)
-        for i, f in enumerate(uploaded_files, 1):
-            st.markdown(f"<span style='color: #d6d3d1;'>{i}. **{f.name}** <span style='color: #78716c;'>({f.size / 1024:.1f} KB)</span></span>", unsafe_allow_html=True)
+            <strong>{len(uploaded_files)} file(s) ready to merge</strong>
+            <span style='color: #78716c; font-size: 0.85rem;'> — use arrows to reorder</span></div>""", unsafe_allow_html=True)
+        
+        # Initialize file order in session state
+        if "merge_file_order" not in st.session_state:
+            st.session_state.merge_file_order = list(range(len(uploaded_files)))
+        
+        # Reset order if file count changed
+        if len(st.session_state.merge_file_order) != len(uploaded_files):
+            st.session_state.merge_file_order = list(range(len(uploaded_files)))
+        
+        # Display files with reorder buttons
+        for display_idx, file_idx in enumerate(st.session_state.merge_file_order):
+            f = uploaded_files[file_idx]
+            col1, col2, col3 = st.columns([0.5, 6, 1])
+            
+            with col1:
+                st.markdown(f"<span style='color: #78716c; font-size: 0.9rem;'>{display_idx + 1}.</span>", unsafe_allow_html=True)
+            
+            with col2:
+                st.markdown(f"<span style='color: #d6d3d1;'>**{f.name}** <span style='color: #78716c;'>({f.size / 1024:.1f} KB)</span></span>", unsafe_allow_html=True)
+            
+            with col3:
+                btn_col1, btn_col2 = st.columns(2)
+                with btn_col1:
+                    if display_idx > 0:
+                        if st.button("↑", key=f"up_{file_idx}", help="Move up"):
+                            order = st.session_state.merge_file_order
+                            order[display_idx], order[display_idx - 1] = order[display_idx - 1], order[display_idx]
+                            st.rerun()
+                with btn_col2:
+                    if display_idx < len(uploaded_files) - 1:
+                        if st.button("↓", key=f"down_{file_idx}", help="Move down"):
+                            order = st.session_state.merge_file_order
+                            order[display_idx], order[display_idx + 1] = order[display_idx + 1], order[display_idx]
+                            st.rerun()
+        
+        # Get files in the correct order for merging
+        ordered_files = [uploaded_files[i] for i in st.session_state.merge_file_order]
         
         output_name = st.text_input(
             "Output filename",
@@ -292,7 +328,7 @@ with tab_merge:
             output_name += ".pdf"
         
         if st.button("Merge PDFs", type="primary", key="merge_btn"):
-            if len(uploaded_files) < 2:
+            if len(ordered_files) < 2:
                 st.error("Please upload at least 2 PDF files to merge.")
             else:
                 with st.spinner("Merging PDFs..."):
@@ -300,9 +336,9 @@ with tab_merge:
                         with tempfile.TemporaryDirectory() as tmp_dir:
                             tmp_path = Path(tmp_dir)
                             
-                            # Save uploaded files to temp directory
+                            # Save uploaded files to temp directory in order
                             input_paths = []
-                            for f in uploaded_files:
+                            for f in ordered_files:
                                 file_path = tmp_path / f.name
                                 file_path.write_bytes(f.read())
                                 input_paths.append(file_path)
@@ -314,7 +350,7 @@ with tab_merge:
                             # Read result for download
                             result_bytes = result_path.read_bytes()
                             
-                            st.success(f"Successfully merged {len(uploaded_files)} PDFs!")
+                            st.success(f"Successfully merged {len(ordered_files)} PDFs!")
                             st.download_button(
                                 label="Download Merged PDF",
                                 data=result_bytes,
@@ -409,11 +445,47 @@ with tab_merge_compress:
     if uploaded_files_mc:
         st.markdown(f"""<div style='background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(180, 83, 9, 0.1) 100%); 
             border-radius: 12px; padding: 1rem; margin: 1rem 0; border-left: 4px solid #b45309;'>
-            <strong>{len(uploaded_files_mc)} file(s) ready</strong></div>""", unsafe_allow_html=True)
+            <strong>{len(uploaded_files_mc)} file(s) ready</strong>
+            <span style='color: #78716c; font-size: 0.85rem;'> — use arrows to reorder</span></div>""", unsafe_allow_html=True)
+        
+        # Initialize file order in session state
+        if "mc_file_order" not in st.session_state:
+            st.session_state.mc_file_order = list(range(len(uploaded_files_mc)))
+        
+        # Reset order if file count changed
+        if len(st.session_state.mc_file_order) != len(uploaded_files_mc):
+            st.session_state.mc_file_order = list(range(len(uploaded_files_mc)))
+        
+        # Display files with reorder buttons
         total_size = 0
-        for i, f in enumerate(uploaded_files_mc, 1):
-            st.markdown(f"<span style='color: #d6d3d1;'>{i}. **{f.name}** <span style='color: #78716c;'>({f.size / 1024:.1f} KB)</span></span>", unsafe_allow_html=True)
+        for display_idx, file_idx in enumerate(st.session_state.mc_file_order):
+            f = uploaded_files_mc[file_idx]
             total_size += f.size
+            col1, col2, col3 = st.columns([0.5, 6, 1])
+            
+            with col1:
+                st.markdown(f"<span style='color: #78716c; font-size: 0.9rem;'>{display_idx + 1}.</span>", unsafe_allow_html=True)
+            
+            with col2:
+                st.markdown(f"<span style='color: #d6d3d1;'>**{f.name}** <span style='color: #78716c;'>({f.size / 1024:.1f} KB)</span></span>", unsafe_allow_html=True)
+            
+            with col3:
+                btn_col1, btn_col2 = st.columns(2)
+                with btn_col1:
+                    if display_idx > 0:
+                        if st.button("↑", key=f"mc_up_{file_idx}", help="Move up"):
+                            order = st.session_state.mc_file_order
+                            order[display_idx], order[display_idx - 1] = order[display_idx - 1], order[display_idx]
+                            st.rerun()
+                with btn_col2:
+                    if display_idx < len(uploaded_files_mc) - 1:
+                        if st.button("↓", key=f"mc_down_{file_idx}", help="Move down"):
+                            order = st.session_state.mc_file_order
+                            order[display_idx], order[display_idx + 1] = order[display_idx + 1], order[display_idx]
+                            st.rerun()
+        
+        # Get files in the correct order
+        ordered_files_mc = [uploaded_files_mc[i] for i in st.session_state.mc_file_order]
         
         st.markdown(f"""<div style='background: rgba(245, 158, 11, 0.08); border-radius: 8px; padding: 0.75rem; margin-top: 0.5rem; text-align: center; border: 1px solid rgba(245, 158, 11, 0.2);'>
             Total input size: <strong>{total_size / 1024:.1f} KB</strong></div>""", unsafe_allow_html=True)
@@ -430,7 +502,7 @@ with tab_merge_compress:
             output_name_mc += ".pdf"
         
         if st.button("Merge & Compress", type="primary", key="merge_compress_btn"):
-            if len(uploaded_files_mc) < 2:
+            if len(ordered_files_mc) < 2:
                 st.error("Please upload at least 2 PDF files to merge.")
             else:
                 with st.spinner("Merging and compressing PDFs..."):
@@ -438,9 +510,9 @@ with tab_merge_compress:
                         with tempfile.TemporaryDirectory() as tmp_dir:
                             tmp_path = Path(tmp_dir)
                             
-                            # Save uploaded files
+                            # Save uploaded files in order
                             input_paths = []
-                            for f in uploaded_files_mc:
+                            for f in ordered_files_mc:
                                 file_path = tmp_path / f.name
                                 file_path.write_bytes(f.read())
                                 input_paths.append(file_path)
@@ -465,7 +537,7 @@ with tab_merge_compress:
                             total_size_kb = total_size / 1024
                             reduction = ((total_size_kb - new_size_kb) / total_size_kb) * 100
                             
-                            st.success(f"Successfully merged and compressed {len(uploaded_files_mc)} PDFs!")
+                            st.success(f"Successfully merged and compressed {len(ordered_files_mc)} PDFs!")
                             
                             col1, col2, col3 = st.columns(3)
                             col1.metric("Original Total", f"{total_size_kb:.1f} KB")
