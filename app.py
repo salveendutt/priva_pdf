@@ -27,13 +27,26 @@ st.markdown("""
     /* Header styling */
     .main-header {
         text-align: center;
-        padding: 2rem 0 1rem 0;
+        padding: 1.5rem 0 0.75rem 0;
+    }
+    
+    .main-header .logo-row {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
     }
     
     .main-header .logo-icon {
-        font-size: 3.5rem;
-        filter: grayscale(100%) brightness(2);
-        opacity: 0.9;
+        width: 32px;
+        height: 32px;
+        border: 2px solid #f59e0b;
+        border-radius: 6px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+        color: #f59e0b;
     }
     
     .main-header h1 {
@@ -41,16 +54,18 @@ st.markdown("""
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
-        font-size: 3rem;
+        font-size: 1.75rem;
         font-weight: 700;
-        margin-bottom: 0.5rem;
+        margin: 0;
         letter-spacing: -0.02em;
+        display: inline;
     }
     
     .main-header p {
-        color: #a8a29e;
-        font-size: 1.1rem;
+        color: #78716c;
+        font-size: 0.9rem;
         letter-spacing: 0.02em;
+        margin-top: 0.25rem;
     }
     
     /* Tab styling */
@@ -221,8 +236,10 @@ st.markdown("""
 # Header
 st.markdown("""
 <div class="main-header">
-    <div class="logo-icon">▢</div>
-    <h1>Priva PDF</h1>
+    <div class="logo-row">
+        <div class="logo-icon">PDF</div>
+        <h1>Priva PDF</h1>
+    </div>
     <p>Private, local PDF tools — your files never leave your machine</p>
 </div>
 """, unsafe_allow_html=True)
