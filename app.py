@@ -1,7 +1,6 @@
 import streamlit as st
 from pathlib import Path
 import tempfile
-import os
 
 from src.pdf_tool import PdfTool
 from src.pdf_compressor import CompressionLevel
@@ -30,25 +29,6 @@ st.markdown("""
         padding: 1.5rem 0 0.75rem 0;
     }
     
-    .main-header .logo-row {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-    }
-    
-    .main-header .logo-icon {
-        width: 32px;
-        height: 32px;
-        border: 2px solid #f59e0b;
-        border-radius: 6px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.9rem;
-        color: #f59e0b;
-    }
-    
     .main-header h1 {
         background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%);
         -webkit-background-clip: text;
@@ -58,7 +38,6 @@ st.markdown("""
         font-weight: 700;
         margin: 0;
         letter-spacing: -0.02em;
-        display: inline;
     }
     
     .main-header p {
@@ -236,10 +215,7 @@ st.markdown("""
 # Header
 st.markdown("""
 <div class="main-header">
-    <div class="logo-row">
-        <div class="logo-icon">PDF</div>
-        <h1>Priva PDF</h1>
-    </div>
+    <h1>Priva PDF</h1>
     <p>Private, local PDF tools — your files never leave your machine</p>
 </div>
 """, unsafe_allow_html=True)
