@@ -24,38 +24,62 @@ def create_upload_component(component_id: str, multiple: bool = False) -> dcc.Up
 
 
 def create_file_list(files: list, show_reorder: bool = False, id_prefix: str = "") -> html.Div:
-    """Create a styled file list with optional reorder buttons."""
+    """Create a styled file list with drag-and-drop reordering (merge only)."""
     if not files:
         return html.Div()
     
     items = []
     for idx, f in enumerate(files):
-        file_row = [
-            html.Span(f"{idx + 1}. ", style={"color": "#78716c", "marginRight": "0.5rem"}),
-            html.Span(f["name"], className="file-name"),
-            html.Span(f" ({f['size'] / 1024:.1f} KB)", className="file-size"),
-        ]
-        
         if show_reorder:
-            reorder_buttons = html.Span([
-                html.Button("↑", id={"type": f"{id_prefix}-move-up", "index": idx}, 
-                           className="reorder-btn", disabled=(idx == 0)),
-                html.Button("↓", id={"type": f"{id_prefix}-move-down", "index": idx}, 
-                           className="reorder-btn", disabled=(idx == len(files) - 1)),
-                html.Button("✕", id={"type": f"{id_prefix}-remove", "index": idx}, 
-                           className="reorder-btn", style={"color": "#ef4444"}),
-            ], style={"marginLeft": "auto"})
-            file_row.append(reorder_buttons)
-        
-        items.append(html.Div(file_row, className="file-item"))
+            # Merge tab: draggable with reorder buttons
+            item_children = [
+                html.Span("⋮⋮", className="drag-handle"),
+                html.Div([
+                    html.Span(f"{idx + 1}", className="file-number"),
+                    html.Span(f["name"], className="file-name"),
+                    html.Span(f"{f['size'] / 1024:.1f} KB", className="file-size-badge"),
+                ], className="file-info"),
+                html.Div([
+                    html.Button("↑", id={"type": f"{id_prefix}-move-up", "index": idx},
+                               className="move-btn", disabled=(idx == 0), title="Move up"),
+                    html.Button("↓", id={"type": f"{id_prefix}-move-down", "index": idx},
+                               className="move-btn", disabled=(idx == len(files) - 1), title="Move down"),
+                    html.Button("✕", id={"type": f"{id_prefix}-remove", "index": idx},
+                               className="remove-btn", title="Remove file"),
+                ], className="file-actions"),
+            ]
+            items.append(
+                html.Div(
+                    item_children,
+                    className="file-item-draggable",
+                    id={"type": f"{id_prefix}-item", "index": idx},
+                    draggable="true",
+                    **{"data-index": str(idx)}
+                )
+            )
+        else:
+            # Split/Compress tabs: simple display, no reordering
+            items.append(
+                html.Div([
+                    html.Span(f"{idx + 1}", className="file-number"),
+                    html.Span(f["name"], className="file-name"),
+                    html.Span(f"{f['size'] / 1024:.1f} KB", className="file-size-badge"),
+                ], className="file-item-simple")
+            )
+    
+    header_text = f"{len(files)} file(s) ready"
+    hint_text = " — drag or use arrows to reorder" if show_reorder else ""
     
     return html.Div([
         html.Div([
-            html.Strong(f"{len(files)} file(s) ready"),
-            html.Span(" — drag to reorder or use arrows" if show_reorder else "", 
-                     style={"color": "#78716c", "fontSize": "0.85rem"}),
-        ]),
-        html.Div(items, style={"marginTop": "0.75rem"}),
+            html.Strong(header_text),
+            html.Span(hint_text, className="reorder-hint"),
+        ], className="file-list-header"),
+        html.Div(
+            items, 
+            id=f"{id_prefix}-sortable-list" if show_reorder else None,
+            className="sortable-list" if show_reorder else "simple-list"
+        ),
     ], className="file-list-container")
 
 

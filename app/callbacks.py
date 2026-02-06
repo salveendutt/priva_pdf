@@ -149,15 +149,48 @@ def update_merge_file_list(files):
 
 @callback(
     Output("merge-files-store", "data", allow_duplicate=True),
-    Input({"type": "merge-move-up", "index": ALL}, "n_clicks"),
-    Input({"type": "merge-move-down", "index": ALL}, "n_clicks"),
     Input({"type": "merge-remove", "index": ALL}, "n_clicks"),
     State("merge-files-store", "data"),
     prevent_initial_call=True,
 )
-def reorder_merge_files(up_clicks, down_clicks, remove_clicks, files):
-    """Handle file reordering for merge."""
+def remove_merge_file(remove_clicks, files):
+    """Handle file removal for merge."""
     if not files or not ctx.triggered_id:
+        raise PreventUpdate
+    
+    # Check if any actual click happened
+    if not any(remove_clicks):
+        raise PreventUpdate
+    
+    triggered = ctx.triggered_id
+    if not isinstance(triggered, dict):
+        raise PreventUpdate
+    
+    idx = triggered["index"]
+    if idx >= len(files):
+        raise PreventUpdate
+        
+    files = files.copy()
+    files.pop(idx)
+    
+    return files
+
+
+@callback(
+    Output("merge-files-store", "data", allow_duplicate=True),
+    Input({"type": "merge-move-up", "index": ALL}, "n_clicks"),
+    Input({"type": "merge-move-down", "index": ALL}, "n_clicks"),
+    State("merge-files-store", "data"),
+    prevent_initial_call=True,
+)
+def reorder_merge_files(up_clicks, down_clicks, files):
+    """Handle file reordering via buttons for merge."""
+    if not files or not ctx.triggered_id:
+        raise PreventUpdate
+    
+    # Check if any actual click happened
+    all_clicks = (up_clicks or []) + (down_clicks or [])
+    if not any(all_clicks):
         raise PreventUpdate
     
     triggered = ctx.triggered_id
@@ -172,8 +205,6 @@ def reorder_merge_files(up_clicks, down_clicks, remove_clicks, files):
         files[idx], files[idx - 1] = files[idx - 1], files[idx]
     elif action == "merge-move-down" and idx < len(files) - 1:
         files[idx], files[idx + 1] = files[idx + 1], files[idx]
-    elif action == "merge-remove":
-        files.pop(idx)
     
     return files
 

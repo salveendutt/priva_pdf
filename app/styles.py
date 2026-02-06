@@ -100,53 +100,201 @@ body {
 
 /* File list */
 .file-list-container {
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(217, 119, 6, 0.1) 100%);
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(217, 119, 6, 0.08) 100%);
     border-radius: 12px;
     padding: 1rem;
     margin: 1rem 0;
     border-left: 4px solid #f59e0b;
 }
 
-.file-item {
+.file-list-header {
+    margin-bottom: 0.75rem;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 0.5rem 0;
-    border-bottom: 1px solid rgba(245, 158, 11, 0.1);
+    gap: 0.5rem;
 }
 
-.file-item:last-child {
-    border-bottom: none;
-}
-
-.file-name {
-    color: #d6d3d1;
-    font-weight: 500;
-}
-
-.file-size {
+.reorder-hint {
     color: #78716c;
     font-size: 0.85rem;
 }
 
-.reorder-btn {
-    background: rgba(245, 158, 11, 0.2);
-    border: none;
-    border-radius: 4px;
-    color: #f59e0b;
-    padding: 0.25rem 0.5rem;
-    cursor: pointer;
-    margin: 0 2px;
+.sortable-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.file-item-draggable {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: rgba(28, 25, 23, 0.6);
+    border-radius: 8px;
+    border: 1px solid rgba(245, 158, 11, 0.15);
     transition: all 0.2s ease;
+    cursor: grab;
+    user-select: none;
 }
 
-.reorder-btn:hover {
-    background: rgba(245, 158, 11, 0.4);
+.file-item-draggable:hover {
+    background: rgba(28, 25, 23, 0.8);
+    border-color: rgba(245, 158, 11, 0.3);
+    transform: translateX(2px);
 }
 
-.reorder-btn:disabled {
+.file-item-draggable:active {
+    cursor: grabbing;
+}
+
+.file-item-draggable.dragging {
+    opacity: 0.9;
+    transform: scale(1.02);
+    box-shadow: 0 8px 25px rgba(245, 158, 11, 0.25);
+    border-color: #f59e0b;
+    background: rgba(245, 158, 11, 0.15);
+    z-index: 1000;
+}
+
+.file-item-draggable.drag-over {
+    border-color: #f59e0b;
+    background: rgba(245, 158, 11, 0.1);
+    transform: translateY(2px);
+}
+
+.drag-handle {
+    color: #78716c;
+    font-size: 1.1rem;
+    letter-spacing: -3px;
+    cursor: grab;
+    padding: 0.25rem;
+    transition: color 0.2s ease;
+}
+
+.file-item-draggable:hover .drag-handle {
+    color: #f59e0b;
+}
+
+.file-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.file-number {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: #1c1917;
+    font-weight: 700;
+    font-size: 0.75rem;
+    min-width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.file-name {
+    color: #e7e5e4;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+}
+
+.file-size-badge {
+    color: #a8a29e;
+    font-size: 0.8rem;
+    background: rgba(168, 162, 158, 0.15);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.remove-btn {
+    background: rgba(239, 68, 68, 0.15);
+    border: none;
+    border-radius: 6px;
+    color: #ef4444;
+    width: 1.75rem;
+    height: 1.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    opacity: 0.7;
+}
+
+.file-item-draggable:hover .remove-btn {
+    opacity: 1;
+}
+
+.remove-btn:hover {
+    background: rgba(239, 68, 68, 0.3);
+    transform: scale(1.1);
+}
+
+/* Move buttons (up/down arrows) */
+.file-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-left: auto;
+}
+
+.move-btn {
+    background: rgba(245, 158, 11, 0.15);
+    border: none;
+    border-radius: 6px;
+    color: #f59e0b;
+    width: 1.75rem;
+    height: 1.75rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.move-btn:hover:not(:disabled) {
+    background: rgba(245, 158, 11, 0.35);
+    transform: scale(1.1);
+}
+
+.move-btn:disabled {
     opacity: 0.3;
     cursor: not-allowed;
+}
+
+.move-btn:active:not(:disabled) {
+    transform: scale(0.95);
+}
+
+/* Simple list for split/compress (no reordering) */
+.simple-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.file-item-simple {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: rgba(28, 25, 23, 0.4);
+    border-radius: 8px;
+    border: 1px solid rgba(245, 158, 11, 0.1);
 }
 
 /* Button styling */
@@ -389,6 +537,131 @@ def get_index_string() -> str:
             {%scripts%}
             {%renderer%}
         </footer>
+        <script>
+        // Drag and drop visual feedback for file reordering
+        // Actual reordering is done via button clicks which are more reliable
+        document.addEventListener('DOMContentLoaded', function() {
+            let draggedItem = null;
+            let draggedIndex = null;
+
+            function initDragDrop() {
+                const sortableLists = document.querySelectorAll('.sortable-list');
+                
+                sortableLists.forEach(list => {
+                    const items = list.querySelectorAll('.file-item-draggable[draggable="true"]');
+                    
+                    items.forEach(item => {
+                        // Avoid duplicate listeners
+                        if (item.dataset.dragInitialized) return;
+                        item.dataset.dragInitialized = 'true';
+                        
+                        item.addEventListener('dragstart', handleDragStart);
+                        item.addEventListener('dragend', handleDragEnd);
+                        item.addEventListener('dragover', handleDragOver);
+                        item.addEventListener('dragenter', handleDragEnter);
+                        item.addEventListener('dragleave', handleDragLeave);
+                        item.addEventListener('drop', handleDrop);
+                    });
+                });
+            }
+
+            function handleDragStart(e) {
+                draggedItem = this;
+                draggedIndex = parseInt(this.dataset.index);
+                this.classList.add('dragging');
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', draggedIndex);
+                
+                setTimeout(() => {
+                    this.style.opacity = '0.5';
+                }, 0);
+            }
+
+            function handleDragEnd(e) {
+                this.classList.remove('dragging');
+                this.style.opacity = '1';
+                
+                document.querySelectorAll('.file-item-draggable').forEach(item => {
+                    item.classList.remove('drag-over');
+                });
+                
+                draggedItem = null;
+                draggedIndex = null;
+            }
+
+            function handleDragOver(e) {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+            }
+
+            function handleDragEnter(e) {
+                e.preventDefault();
+                if (this !== draggedItem) {
+                    this.classList.add('drag-over');
+                }
+            }
+
+            function handleDragLeave(e) {
+                this.classList.remove('drag-over');
+            }
+
+            function handleDrop(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                this.classList.remove('drag-over');
+                
+                if (draggedItem && this !== draggedItem) {
+                    const fromIndex = parseInt(draggedItem.dataset.index);
+                    const toIndex = parseInt(this.dataset.index);
+                    
+                    // Use the arrow buttons to move items step by step
+                    // This triggers the reliable Dash callbacks
+                    const direction = fromIndex < toIndex ? 'down' : 'up';
+                    const steps = Math.abs(toIndex - fromIndex);
+                    
+                    let currentIndex = fromIndex;
+                    for (let i = 0; i < steps; i++) {
+                        const btnType = direction === 'down' ? 'merge-move-down' : 'merge-move-up';
+                        const btn = document.querySelector(
+                            `button[id*='"type":"${btnType}"'][id*='"index":${currentIndex}']`
+                        );
+                        if (btn && !btn.disabled) {
+                            btn.click();
+                            currentIndex = direction === 'down' ? currentIndex + 1 : currentIndex - 1;
+                        }
+                    }
+                }
+            }
+
+            // Initialize on page load and watch for DOM changes
+            initDragDrop();
+            
+            // Re-initialize when Dash updates the DOM
+            const observer = new MutationObserver((mutations) => {
+                let shouldInit = false;
+                mutations.forEach((mutation) => {
+                    if (mutation.addedNodes.length > 0) {
+                        mutation.addedNodes.forEach(node => {
+                            if (node.nodeType === 1 && 
+                                (node.classList?.contains('file-item-draggable') ||
+                                 node.querySelector?.('.file-item-draggable'))) {
+                                shouldInit = true;
+                            }
+                        });
+                    }
+                });
+                if (shouldInit) {
+                    setTimeout(initDragDrop, 50);
+                }
+            });
+            
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+        });
+        </script>
     </body>
 </html>
 '''
