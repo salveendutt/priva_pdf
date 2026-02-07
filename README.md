@@ -1,6 +1,6 @@
 # 🔒 Priva PDF
 
-I built this tool for personal use because I refuse to upload my passport or bank statements to random websites just to merge or shrink a file. Most "free" online PDF tools are a privacy nightmare; priva_pdf is a simple, local-first alternative that ensures your sensitive data never leaves your machine.
+I built priva_pdf because I wasn't comfortable uploading sensitive documents—like passports or bank statements—to third-party servers just to perform simple edits. Many online PDF tools come with privacy trade-offs; this project offers a local-first alternative that ensures your data never leaves your machine.
 
 No cloud uploads. No tracking. No bloat.
 
