@@ -92,7 +92,8 @@ def create_compression_selector(component_id: str) -> html.Div:
             options=COMPRESSION_OPTIONS,
             value="MEDIUM",
             clearable=False,
-            style={"backgroundColor": "rgba(28, 25, 23, 0.8)"},
+            searchable=False,
+            className="retro-dropdown",
         ),
         html.Div(id=f"{component_id}-desc", className="compression-desc"),
     ], style={"marginBottom": "1rem"})

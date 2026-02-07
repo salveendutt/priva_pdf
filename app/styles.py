@@ -513,6 +513,69 @@ hr {
 .Select-value-label {
     color: #fafaf9 !important;
 }
+
+/* Retro dropdown styling */
+.retro-dropdown .Select-control,
+.retro-dropdown > div {
+    background: linear-gradient(180deg, rgba(40, 36, 33, 0.95) 0%, rgba(28, 25, 23, 0.98) 100%) !important;
+    border: 2px solid rgba(245, 158, 11, 0.25) !important;
+    border-radius: 8px !important;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(245, 158, 11, 0.1) !important;
+    min-height: 42px !important;
+}
+
+.retro-dropdown .Select-control:hover,
+.retro-dropdown > div:hover {
+    border-color: rgba(245, 158, 11, 0.4) !important;
+}
+
+.retro-dropdown .Select-value-label,
+.retro-dropdown .Select-placeholder {
+    color: #e7e5e4 !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.01em !important;
+}
+
+.retro-dropdown .Select-arrow-zone {
+    padding-right: 12px !important;
+}
+
+.retro-dropdown .Select-arrow {
+    border-color: #f59e0b transparent transparent !important;
+}
+
+.retro-dropdown .Select-menu-outer {
+    background: linear-gradient(180deg, #1c1917 0%, #292524 100%) !important;
+    border: 2px solid rgba(245, 158, 11, 0.3) !important;
+    border-radius: 8px !important;
+    margin-top: 4px !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(245, 158, 11, 0.1) !important;
+    overflow: hidden !important;
+}
+
+.retro-dropdown .Select-option {
+    background: transparent !important;
+    color: #d6d3d1 !important;
+    padding: 10px 14px !important;
+    border-bottom: 1px solid rgba(245, 158, 11, 0.08) !important;
+    transition: all 0.15s ease !important;
+}
+
+.retro-dropdown .Select-option:last-child {
+    border-bottom: none !important;
+}
+
+.retro-dropdown .Select-option:hover,
+.retro-dropdown .Select-option.is-focused {
+    background: linear-gradient(90deg, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0.05) 100%) !important;
+    color: #f59e0b !important;
+}
+
+.retro-dropdown .Select-option.is-selected {
+    background: linear-gradient(90deg, rgba(245, 158, 11, 0.25) 0%, rgba(245, 158, 11, 0.1) 100%) !important;
+    color: #f59e0b !important;
+    font-weight: 600 !important;
+}
 """
 
 
